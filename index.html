@@ -5,18 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galeri Foto Wiwi</title>
     <meta name="description" content="Galeri Foto Estetik Wiwi">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600&family=Great+Vibes&display=swap" rel="stylesheet">
+    
     <!-- Preconnect untuk meningkatkan performa loading -->
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    
     <!-- Preload CSS -->
     <link rel="preload" href="style.css" as="style">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" as="style">
+    
     <!-- Preload critical images -->
     <link rel="preload" as="image" href="wiwi/chwiwi.jpg" type="image/jpeg">
     <link rel="preload" as="image" href="wiwi/chwiwi.webp" type="image/webp">
+    
     <!-- CSS -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <!-- Image optimization meta tags -->
     <meta http-equiv="Accept-CH" content="DPR, Width, Viewport-Width">
     <meta http-equiv="Accept-CH-Lifetime" content="86400">
@@ -26,7 +36,7 @@
         <div class="nav-content">
             <div class="nav-brand">
                 <i class="fas fa-camera"></i>
-                <span>Galeri Wiwi</span>
+                <span class="brand-text">Galeri Wiwi</span>
             </div>
             <div class="nav-links">
                 <a href="#home" class="active">Beranda</a>
@@ -57,7 +67,25 @@
     </div>
     
     <main class="container">
-        <h1 class="title">Galeri Foto</h1>
+        <div class="header-section">
+            <div class="flower-container">
+                <div class="flower">
+                    <div class="petal-container">
+                        <div class="petal petal-1"></div>
+                        <div class="petal petal-2"></div>
+                        <div class="petal petal-3"></div>
+                        <div class="petal petal-4"></div>
+                        <div class="petal petal-5"></div>
+                        <div class="petal petal-6"></div>
+                        <div class="petal petal-7"></div>
+                        <div class="petal petal-8"></div>
+                    </div>
+                    <div class="flower-center"></div>
+                </div>
+            </div>
+            <h1 class="title">Galeri Foto</h1>
+            <p class="subtitle">Koleksi Momen Indah</p>
+        </div>
         <div class="gallery" id="gallery">
             <div class="gallery-grid" id="galleryGrid"></div>
         </div>

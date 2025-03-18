@@ -47,6 +47,7 @@
         initNavbar();
         initGallery();
         initModal();
+        initFlower();
         
         // Peningkatan performa
         window.addEventListener('load', () => {
@@ -431,6 +432,24 @@
     // Close modal
     function closeModal() {
         DOM.modal.style.display = 'none';
+    }
+    
+    // Inisialisasi animasi bunga
+    function initFlower() {
+        const petals = document.querySelectorAll('.petal');
+        petals.forEach((petal, index) => {
+            const rotation = (index * 45); // 360 / 8 petals = 45 degrees each
+            petal.style.setProperty('--rotation', `${rotation}deg`);
+        });
+
+        // Tambahkan efek hover pada bunga
+        const flower = document.querySelector('.flower');
+        flower.addEventListener('mouseover', () => {
+            flower.style.animation = 'none';
+            requestAnimationFrame(() => {
+                flower.style.animation = 'flowerRotate 20s infinite linear';
+            });
+        });
     }
     
     // Start app when DOM is loaded
