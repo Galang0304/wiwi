@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeri Foto Wiwi</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="dark-mode">
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="nav-brand">
+                <i class="fas fa-camera"></i>
+                <span>Galeri Wiwi</span>
+            </div>
+            <div class="nav-links">
+                <a href="#home" class="active">Beranda</a>
+                <a href="#gallery">Galeri</a>
+                <a href="#about">Tentang</a>
+                <a href="#contact">Kontak</a>
+            </div>
+            <div class="nav-controls">
+                <button id="themeToggle" class="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="nav-toggle">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="music-control">
+        <button id="musicToggle" class="music-toggle">
+            <i class="fas fa-music"></i>
+        </button>
+        <audio id="bgMusic" loop autoplay muted>
+            <source src="Addison Rae - Diet Pepsi-yt.savetube.me.mp3" type="audio/mpeg">
+            Browser Anda tidak mendukung elemen audio.
+        </audio>
+    </div>
+    <div class="container">
+        <h1 class="title">Galeri Foto Estetik</h1>
+        <div class="gallery">
+            <div class="gallery-grid">
+                <!-- Foto-foto akan ditambahkan melalui JavaScript -->
+            </div>
+        </div>
+        <div class="modal" id="imageModal">
+            <span class="close-button">&times;</span>
+            <img class="modal-content" id="modalImage">
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
