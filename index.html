@@ -11,9 +11,15 @@
     <!-- Preload CSS -->
     <link rel="preload" href="style.css" as="style">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" as="style">
+    <!-- Preload critical images -->
+    <link rel="preload" as="image" href="wiwi/chwiwi.jpg" type="image/jpeg">
+    <link rel="preload" as="image" href="wiwi/chwiwi.webp" type="image/webp">
     <!-- CSS -->
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Image optimization meta tags -->
+    <meta http-equiv="Accept-CH" content="DPR, Width, Viewport-Width">
+    <meta http-equiv="Accept-CH-Lifetime" content="86400">
 </head>
 <body class="dark-mode">
     <nav class="navbar">
@@ -51,7 +57,7 @@
     </div>
     
     <main class="container">
-        <h1 class="title">Galeri Foto Estetik</h1>
+        <h1 class="title">fOTO</h1>
         <div class="gallery" id="gallery">
             <div class="gallery-grid" id="galleryGrid"></div>
         </div>

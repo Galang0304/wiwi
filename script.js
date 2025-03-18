@@ -6,13 +6,13 @@
     const CONFIG = {
         photoPrefix: '',
         photoPath: 'wiwi/',
-        photoExtension: '.jpg',
-        photoCount: 23,
+        photoExtension: '.webp',
+        photoCount: 22,
         photoIndexNames: ['chwiwi', 'chwiwi (1)', 'chwiwi (2)', 'chwiwi (3)', 'chwiwi (4)', 
                           'chwiwi (5)', 'chwiwi (6)', 'chwiwi (7)', 'chwiwi (8)', 'chwiwi (9)', 
                           'chwiwi (10)', 'chwiwi (11)', 'chwiwi (12)', 'chwiwi (13)', 'chwiwi (14)', 
                           'chwiwi (15)', 'chwiwi (16)', 'chwiwi (17)', 'chwiwi (18)', 'chwiwi (19)', 
-                          'chwiwi (20)', 'chwiwi (21)', 'chwiwi (25)']
+                          'chwiwi (20)', 'chwiwi (21)']
     };
     
     // Cache DOM
@@ -216,7 +216,32 @@
         loadingIndicator.textContent = 'Loading...';
         galleryItem.appendChild(loadingIndicator);
         
-        // Initially, don't load the image - let Intersection Observer handle it
+        // Create image element but don't load it yet
+        const img = document.createElement('img');
+        img.className = 'gallery-img';
+        img.loading = 'lazy'; // Native lazy loading
+        img.decoding = 'async'; // Async decoding
+        img.sizes = '(max-width: 768px) 100vw, 33vw'; // Responsive sizes
+        
+        // Generate WebP path
+        const webpPath = photoPath.replace('.jpg', '.webp');
+        
+        // Create picture element for WebP support
+        const picture = document.createElement('picture');
+        
+        // WebP source
+        const sourceWebp = document.createElement('source');
+        sourceWebp.type = 'image/webp';
+        sourceWebp.srcset = `${webpPath} 1x`;
+        picture.appendChild(sourceWebp);
+        
+        // Original image as fallback
+        img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'; // Placeholder
+        img.dataset.src = photoPath;
+        picture.appendChild(img);
+        
+        galleryItem.appendChild(picture);
+
         return galleryItem;
     }
     
@@ -249,73 +274,116 @@
     
     // Load image for gallery item
     function loadImage(galleryItem) {
-        const photoPath = galleryItem.dataset.photoPath;
+        const picture = galleryItem.querySelector('picture');
+        const img = picture.querySelector('img');
         const loadingIndicator = galleryItem.querySelector('.loading-indicator');
+        const originalPath = img.dataset.src;
+
+        // Generate paths untuk WebP dan JPG
+        const webpPath = originalPath.replace(/\.(jpg|jpeg|png)$/, '.webp');
+        const jpgPath = originalPath.replace(/\.(webp|png)$/, '.jpg');
         
-        const img = new Image();
-        img.src = photoPath;
-        img.alt = `Gallery Image ${parseInt(galleryItem.dataset.index) + 1}`;
-        img.loading = 'lazy';
-        img.dataset.index = galleryItem.dataset.index;
+        console.log(`Mencoba memuat gambar: ${webpPath}`); // Logging untuk debug
         
-        const loadingTimeout = setTimeout(() => {
-            if (!img.complete) {
-                loadingIndicator.textContent = 'Loading lambat, mohon tunggu...';
+        // Fungsi untuk menangani loading error
+        const handleError = () => {
+            console.log(`Gagal memuat: ${img.src}`); // Logging untuk debug
+            
+            // Jika WebP gagal, coba load JPG
+            if (img.src.endsWith('.webp')) {
+                console.log(`Mencoba format JPG: ${jpgPath}`); // Logging untuk debug
+                img.src = jpgPath;
+                sourceWebp.srcset = ''; // Kosongkan WebP source
+            } else {
+                console.log('Mencoba path alternatif...'); // Logging untuk debug
+                tryAlternativePaths(galleryItem, originalPath, loadingIndicator);
             }
-        }, 3000);
-        
-        img.onload = () => {
-            clearTimeout(loadingTimeout);
+        };
+
+        // Fungsi untuk menangani loading success
+        const handleLoad = () => {
+            console.log(`Berhasil memuat: ${img.src}`); // Logging untuk debug
             loadingIndicator.style.display = 'none';
-            galleryItem.appendChild(img);
+            img.style.opacity = '1';
             state.loadedImages++;
             
-            // Add click event for modal
+            // Tambahkan efek fade in
+            requestAnimationFrame(() => {
+                img.style.transition = 'opacity 0.3s ease-in';
+                img.style.opacity = '1';
+            });
+
+            // Preload gambar berikutnya jika ada
+            if (state.loadedImages < state.totalImages) {
+                const nextItem = galleryItem.nextElementSibling;
+                if (nextItem && !nextItem.querySelector('img').src) {
+                    setTimeout(() => {
+                        loadImage(nextItem);
+                    }, 100);
+                }
+            }
+
+            // Tambahkan event listener untuk modal setelah gambar berhasil dimuat
             galleryItem.addEventListener('click', () => {
-                openModal(photoPath);
+                openModal(img.src);
             });
         };
+
+        // Set event listeners
+        img.onerror = handleError;
+        img.onload = handleLoad;
+
+        // Update source WebP
+        const sourceWebp = picture.querySelector('source');
+        sourceWebp.srcset = webpPath;
         
-        img.onerror = () => {
-            clearTimeout(loadingTimeout);
-            tryAlternativePaths(galleryItem, photoPath, loadingIndicator);
-        };
+        // Mulai loading gambar dengan WebP
+        img.src = webpPath;
     }
     
     // Try alternative paths for image
     function tryAlternativePaths(galleryItem, originalPath, loadingIndicator) {
         const photoName = originalPath.split('/').pop().split('.')[0];
-        const extension = '.' + originalPath.split('.').pop();
+        
+        console.log(`Mencoba mencari path alternatif untuk: ${photoName}`); // Logging untuk debug
         
         const altPaths = [
-            originalPath.replace('wiwi/', ''),           // Tanpa folder
-            './' + originalPath,                         // Dengan ./ di depan
-            originalPath.replace('wiwi/', './wiwi/'),    // Dengan ./wiwi/
-            originalPath.replace('.jpg', '.png'),        // Coba PNG jika JPG
-            originalPath.replace('.jpg', '.jpeg'),       // Coba JPEG jika JPG
-            photoName + extension                        // Hanya nama file
+            `wiwi/${photoName}.webp`,           // Path WebP langsung
+            `wiwi/${photoName}.jpg`,            // Path JPG langsung
+            originalPath.replace('wiwi/', ''),   // Tanpa folder
+            './' + originalPath,                 // Dengan ./ di depan
+            `./wiwi/${photoName}.webp`,         // Path WebP dengan ./
+            `./wiwi/${photoName}.jpg`,          // Path JPG dengan ./
+            photoName + '.webp',                // Hanya nama file WebP
+            photoName + '.jpg'                  // Hanya nama file JPG
         ];
+        
+        console.log('Path alternatif yang akan dicoba:', altPaths); // Logging untuk debug
         
         let currentAltPathIndex = 0;
         
         function tryNextPath() {
             if (currentAltPathIndex >= altPaths.length) {
+                console.log(`Semua path alternatif gagal untuk: ${photoName}`); // Logging untuk debug
                 loadingIndicator.textContent = 'Tidak dapat memuat gambar';
                 loadingIndicator.style.color = 'red';
                 return;
             }
             
             const altPath = altPaths[currentAltPathIndex];
+            console.log(`Mencoba path alternatif ke-${currentAltPathIndex + 1}: ${altPath}`); // Logging untuk debug
             currentAltPathIndex++;
             
             const altImg = new Image();
             
             altImg.onload = () => {
+                console.log(`Berhasil memuat path alternatif: ${altPath}`); // Logging untuk debug
                 loadingIndicator.style.display = 'none';
                 
                 const img = new Image();
                 img.src = altPath;
                 img.alt = `Gallery Image ${parseInt(galleryItem.dataset.index) + 1}`;
+                img.className = 'gallery-img';
                 galleryItem.appendChild(img);
                 
                 galleryItem.addEventListener('click', () => {
@@ -323,7 +391,10 @@
                 });
             };
             
-            altImg.onerror = tryNextPath;
+            altImg.onerror = () => {
+                console.log(`Gagal memuat path alternatif: ${altPath}`); // Logging untuk debug
+                tryNextPath();
+            };
             
             altImg.src = altPath;
         }
